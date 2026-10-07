@@ -4,3 +4,10 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 ./vscode
+/allure-results/
+/allure-report/
+/inspect.tmp.js
+/inspect-output.txt
+/inspect2.tmp.js
+/inspect3.tmp.js
+/inspect2-output.txt
