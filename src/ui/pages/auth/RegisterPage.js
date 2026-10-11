@@ -26,6 +26,7 @@ export class RegisterPage {
   async open() {
     await this.step(`Open the 'Register' page`, async () => {
       await this.page.goto('register.htm');
+      await this.page.waitForLoadState('networkidle');
     });
   }
 
@@ -41,7 +42,9 @@ export class RegisterPage {
       await this.ssnField.fill(user.ssn);
       await this.usernameField.fill(user.username);
       await this.passwordField.fill(user.password);
-      await this.confirmPasswordField.fill(user.password);
+      await this.confirmPasswordField.fill(
+        user.confirmPassword ?? user.password,
+      );
     });
   }
 
@@ -66,7 +69,7 @@ export class RegisterPage {
       `Assert the error '${message}' is visible for '${fieldId}'`,
       async () => {
         await expect(
-          this.page.locator(`#${fieldId}\\.errors`),
+          this.page.locator(`[id="${fieldId}.errors"]`),
         ).toHaveText(message);
       },
     );
