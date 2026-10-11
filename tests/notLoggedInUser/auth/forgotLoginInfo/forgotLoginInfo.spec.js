@@ -1,5 +1,5 @@
 import * as allure from 'allure-js-commons';
-import { test } from '../../_fixtures/fixtures';
+import { test } from '../../../_fixtures/fixtures';
 
 const REQUIRED_FIELDS = [
   { key: 'firstName', message: 'First name is required.' },
