@@ -112,3 +112,21 @@ test('Register fails with an already taken username', async ({
     'This username already exists.',
   );
 });
+
+test('Register fails when the passwords do not match', async ({
+  registerPage,
+  newUser,
+}) => {
+  await allure.severity('normal');
+
+  await registerPage.open();
+  await registerPage.fillRegisterForm({
+    ...newUser,
+    confirmPassword: `${newUser.password}x`,
+  });
+  await registerPage.clickRegisterButton();
+  await registerPage.assertFieldErrorIsVisible(
+    'repeatedPassword',
+    'Passwords did not match.',
+  );
+});
