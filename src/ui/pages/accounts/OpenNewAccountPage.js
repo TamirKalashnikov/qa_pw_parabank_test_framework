@@ -57,4 +57,10 @@ export class OpenNewAccountPage {
       await expect(this.newAccountId).toHaveText(/^\d+$/);
     });
   }
+
+  async getNewAccountId() {
+    return await this.step(`Read the new account id`, async () => {
+      return (await this.newAccountId.textContent()).trim();
+    });
+  }
 }
