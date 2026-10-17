@@ -10,10 +10,16 @@ export class AccountDetailsPage {
     this.typeSelect = page.locator('#transactionType');
     this.goButton = page.getByRole('button', { name: 'Go' });
     this.rightPanel = page.locator('#rightPanel');
+    this.transactionTable = page.locator('#transactionTable');
+    this.noTransactions = page.locator('#noTransactions');
   }
 
   async step(title, stepToRun) {
     return await testStep(title, stepToRun, this.userId);
+  }
+
+  transactionRow(name) {
+    return this.transactionTable.locator('tr', { hasText: name });
   }
 
   async open(accountId) {
@@ -31,8 +37,8 @@ export class AccountDetailsPage {
     await this.step(
       `Select the filters: period '${month}', type '${type}'`,
       async () => {
-        await this.monthSelect.selectOption({ label: month });
-        await this.typeSelect.selectOption({ label: type });
+        await this.monthSelect.selectOption({ value: month });
+        await this.typeSelect.selectOption({ value: type });
       },
     );
   }
@@ -42,6 +48,11 @@ export class AccountDetailsPage {
       await this.goButton.click();
       await this.page.waitForLoadState('networkidle');
     });
+  }
+
+  async filterActivity(month, type) {
+    await this.selectFilters(month, type);
+    await this.clickGo();
   }
 
   async assertNoInternalError() {
@@ -74,18 +85,15 @@ export class AccountDetailsPage {
 
   async assertFiltersAreAll() {
     await this.step(`Assert both filters are set to 'All'`, async () => {
-      await expect(this.monthSelect.locator('option:checked')).toHaveText(
-        'All',
-      );
-      await expect(this.typeSelect.locator('option:checked')).toHaveText(
-        'All',
-      );
+      await expect(this.monthSelect).toHaveValue('All');
+      await expect(this.typeSelect).toHaveValue('All');
     });
   }
 
   async assertNoTransactions() {
     await this.step(`Assert 'No transactions found.' is shown`, async () => {
-      await expect(this.rightPanel).toContainText('No transactions found.');
+      await expect(this.noTransactions).toBeVisible();
+      await expect(this.noTransactions).toHaveText('No transactions found.');
     });
   }
 
@@ -94,8 +102,24 @@ export class AccountDetailsPage {
       `Assert the transaction '${name}' has ${column} ${amount}`,
       async () => {
         const columnIndex = column === 'debit' ? 2 : 3;
-        const row = this.rightPanel.locator('tr', { hasText: name });
-        await expect(row.locator('td').nth(columnIndex)).toHaveText(amount);
+        await expect(
+          this.transactionRow(name).locator('td').nth(columnIndex),
+        ).toHaveText(amount);
+      },
+    );
+  }
+
+  async assertTransactionListed(name) {
+    await this.step(`Assert the transaction '${name}' is listed`, async () => {
+      await expect(this.transactionRow(name)).toBeVisible();
+    });
+  }
+
+  async assertTransactionNotListed(name) {
+    await this.step(
+      `Assert the transaction '${name}' is not listed`,
+      async () => {
+        await expect(this.transactionRow(name)).toHaveCount(0);
       },
     );
   }
