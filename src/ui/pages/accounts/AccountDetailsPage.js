@@ -88,4 +88,15 @@ export class AccountDetailsPage {
       await expect(this.rightPanel).toContainText('No transactions found.');
     });
   }
+
+  async assertTransaction(name, column, amount) {
+    await this.step(
+      `Assert the transaction '${name}' has ${column} ${amount}`,
+      async () => {
+        const columnIndex = column === 'debit' ? 2 : 3;
+        const row = this.rightPanel.locator('tr', { hasText: name });
+        await expect(row.locator('td').nth(columnIndex)).toHaveText(amount);
+      },
+    );
+  }
 }
