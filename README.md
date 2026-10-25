@@ -78,3 +78,7 @@ Every test registers a fresh user through the UI, so tests are independent. Para
 
 1. **Transfer Funds**: an empty amount or letters in the amount show "An internal error has occurred and has been logged." instead of the validation messages present in the page markup. The expected behaviour is covered by `test.fail()` tests, the current behaviour by separate tests.
 2. **Request Loan**: an empty form is sent to the server (400 Bad Request) and the site shows an internal error instead of a validation message. The current behaviour is covered by a test.
+
+## Stability
+
+The demo site is public and occasionally unstable, so `retries: 1` is enabled in `playwright.config.js`. A test that fails once and passes on retry is reported as flaky, not failed.

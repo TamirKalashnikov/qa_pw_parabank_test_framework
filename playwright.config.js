@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 60000,
   expect: { timeout: 10000 },
   fullyParallel: false,
-  retries: process.env.CI ? 0 : 0,
+  retries: 1,
   workers: process.env.CI ? 1 : 1,
   reporter: [['allure-playwright'], ['list', { printSteps: false }]],
   use: {
